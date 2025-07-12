@@ -110,7 +110,7 @@ const filteredRestaurants = restaurants.filter((r) =>
                     <span className="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">Active</span>
                   </td>
                   <td className="px-4 py-3">
-                    <QRCodeCanvas value={`https://yourapp.com/restaurant/${r._id}`} size={64} />
+                    <QRCodeCanvas value={`http://localhost:5173/menu/${r._id}`} size={64} />
 
                   </td>
                   <td className="px-4 py-3 text-right space-x-2">

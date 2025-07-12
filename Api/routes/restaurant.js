@@ -31,7 +31,7 @@ router.post("/menu", verifyToken, async (req, res) => {
 // Get own menu
 router.get("/menu", verifyToken, async (req, res) => {
   const restaurant = await Restaurant.findById(req.restaurantId);
-  res.json(restaurant.menu);
+  res.json({ menu: restaurant.menu, restaurantId: restaurant._id });
 });
 
 export default router;

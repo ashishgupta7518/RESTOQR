@@ -7,29 +7,57 @@ const MenuPublic = () => {
   const [restaurant, setRestaurant] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/public/menu/${id}`)
-      .then(res => setRestaurant(res.data))
+    axios
+      .get(`http://localhost:5000/api/public/menu/${id}`)
+      .then((res) => setRestaurant(res.data))
       .catch(() => setRestaurant(null));
   }, [id]);
 
-  if (!restaurant) return <div className="p-4 text-red-600">Menu not found or loading...</div>;
+  if (!restaurant) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-xl text-red-500">
+        Menu not found or loading...
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-6">Menu: {restaurant.name}</h1>
-      {restaurant.menu.map((cat, i) => (
-        <div key={i} className="mb-4">
-          <h2 className="text-xl font-semibold text-gray-700">{cat.category}</h2>
-          <ul className="list-disc list-inside pl-4">
-            {cat.items.map((item, j) => (
-              <li key={j} className="text-gray-600">
-                <span className="font-medium">{item.name}</span> - ₹{item.price}  
-                <span className="text-sm text-gray-500 ml-2">{item.description}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-10">
+          {restaurant.name}'s Menu
+        </h1>
+
+        {restaurant.menu.length === 0 && (
+          <p className="text-center text-gray-500">No menu items found.</p>
+        )}
+
+        {restaurant.menu.map((cat, i) => (
+          <div key={i} className="mb-8 bg-white shadow-md rounded-lg p-6 border border-gray-200">
+            <h2 className="text-2xl font-semibold text-blue-600 border-b pb-2 mb-4">
+              {cat.category}
+            </h2>
+            <div className="space-y-4">
+              {cat.items.map((item, j) => (
+                <div
+                  key={j}
+                  className="flex justify-between items-start p-4 bg-gray-100 rounded-md hover:bg-gray-200 transition"
+                >
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {item.name}
+                    </h3>
+                    <p className="text-sm text-gray-600">{item.description}</p>
+                  </div>
+                  <div className="text-lg font-bold text-green-600">
+                    ₹{item.price}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

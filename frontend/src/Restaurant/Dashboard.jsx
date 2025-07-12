@@ -8,6 +8,7 @@ const RestaurantDashboard = () => {
     const [category, setCategory] = useState("");
     const [item, setItem] = useState({ name: "", price: "", description: "" });
     const [search, setSearch] = useState("");
+    const [restaurantId, setRestaurantId] = useState(""); // <-- Add this
 
     const token = localStorage.getItem("token");
 
@@ -33,11 +34,18 @@ const RestaurantDashboard = () => {
     };
 
     const fetchMenu = async () => {
-        const res = await axios.get("http://localhost:5000/api/restaurant/menu", {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        setMenu(res.data);
-    };
+  try {
+    const res = await axios.get("http://localhost:5000/api/restaurant/menu", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setMenu(res.data.menu || []); // 
+    setRestaurantId(res.data.restaurantId || ""); // 
+    console.log("Fetched menu:", res.data.menu);
+    console.log("Restaurant ID:", res.data.restaurantId);
+  } catch (err) {
+    console.error("Error fetching menu:", err);
+  }
+};
 
     useEffect(() => {
         fetchMenu();
@@ -121,7 +129,8 @@ const RestaurantDashboard = () => {
             <div className="mt-10 bg-white p-6 rounded-lg shadow">
                 <h3 className="text-lg font-semibold mb-4">Generate QR Code for Your Menu</h3>
                 <div className="flex items-center justify-center border h-32 mb-4">
-                    <QRCodeCanvas value={`https://yourapp.com/menu/${token}`} />
+                    <QRCodeCanvas value={`https://yourapp.com/menu/${restaurantId}`} />
+
                 </div>
                 <div className="text-center">
                     <button onClick={saveMenu} className="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
@@ -133,4 +142,4 @@ const RestaurantDashboard = () => {
     );
 };
 
-export default RestaurantDashboard;
+export default RestaurantDashboard; 

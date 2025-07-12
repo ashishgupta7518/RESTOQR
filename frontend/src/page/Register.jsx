@@ -1,13 +1,16 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
       await axios.post("http://localhost:5000/api/auth/register", form);
       alert("Registered! Now login.");
+      navigate("/login"); // Navigate to login after successful registration
     } catch (err) {
       console.error(err);
       alert("Registration failed!");
@@ -68,10 +71,23 @@ const Register = () => {
             <button
               type="button"
               onClick={handleRegister}
-              className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-700 transition duration-200"
+              className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-700 transition duration-200 cursor-pointer"
             >
               Register
             </button>
+
+            <div className="text-center">
+              <p className="text-sm mt-2">
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => navigate("/login")}
+                  className="text-blue-600 hover:underline font-medium cursor-pointer"
+                >
+                  Login
+                </button>
+              </p>
+            </div>
           </form>
         </div>
       </div>
