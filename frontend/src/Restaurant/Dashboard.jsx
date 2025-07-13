@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { QRCodeCanvas } from "qrcode.react";
 import { PlusCircle, Trash2, Edit2, Image } from "lucide-react";
+import API_BASE_URL from "./../config";
 
 const RestaurantDashboard = () => {
     const [menu, setMenu] = useState([]);
@@ -27,7 +28,7 @@ const RestaurantDashboard = () => {
     };
 
     const saveMenu = async () => {
-        await axios.post("http://localhost:5000/api/restaurant/menu", { menu }, {
+        await axios.post(`${API_BASE_URL}/restaurant/menu`, { menu }, {
             headers: { Authorization: `Bearer ${token}` },
         });
         alert("Menu saved");
@@ -35,7 +36,7 @@ const RestaurantDashboard = () => {
 
     const fetchMenu = async () => {
   try {
-    const res = await axios.get("http://localhost:5000/api/restaurant/menu", {
+    const res = await axios.get(`${API_BASE_URL}/restaurant/menu`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setMenu(res.data.menu || []); // 
@@ -129,7 +130,7 @@ const RestaurantDashboard = () => {
             <div className="mt-10 bg-white p-6 rounded-lg shadow">
                 <h3 className="text-lg font-semibold mb-4">Generate QR Code for Your Menu</h3>
                 <div className="flex items-center justify-center border h-32 mb-4">
-                    <QRCodeCanvas value={`https://yourapp.com/menu/${restaurantId}`} />
+                    <QRCodeCanvas value={`http://localhost:5173/menu/${restaurantId}`} />
 
                 </div>
                 <div className="text-center">

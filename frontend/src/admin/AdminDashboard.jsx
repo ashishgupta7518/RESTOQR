@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { QRCodeCanvas } from "qrcode.react";
 import { LogOut, Eye, Edit, Trash2 } from "lucide-react";
+import API_BASE_URL from "./../config";
 
 
 const AdminDashboard = () => {
@@ -11,7 +12,7 @@ const AdminDashboard = () => {
 
   const fetchAll = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/restaurants", {
+      const res = await axios.get(`${API_BASE_URL}/api/admin/restaurants`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRestaurants(res.data);

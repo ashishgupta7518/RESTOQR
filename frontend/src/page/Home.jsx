@@ -1,6 +1,6 @@
 import Footer from "../components/Footer";
 import Pricing from "../components/Pricing";
-import Navbar from "../components/navbar";
+import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import HomeDash from "../components/HomeDash";
 
