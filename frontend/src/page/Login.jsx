@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "./../config";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -20,17 +21,40 @@ const Login = () => {
       localStorage.setItem("role", role);
 
       if (role === "admin") {
-        navigate("/admin/dashboard");
+
+        toast.success("Login successfully!", {
+          duration: 3000,
+          position: "top-center",
+        });
+
+
+        setTimeout(() => {
+          navigate("/admin/dashboard");
+
+        }, 1500);
       } else {
-        navigate("/restaurant/dashboard");
+        toast.success("Login successfully!", {
+          duration: 3000,
+          position: "top-center",
+        });
+
+        setTimeout(() => {
+          navigate("/restaurant/dashboard");
+
+        }, 1500);
+
       }
     } catch (err) {
-      alert("Login failed!");
+      toast.error("Registration failed! Please try again.", {
+        duration: 3000,
+        position: "top-center",
+      });
     }
   };
 
   return (
     <div className="min-h-screen flex">
+      <Toaster />
       {/* Left Image Section (Only image, no text) */}
       <div
         className="hidden md:flex w-1/2 bg-cover bg-no-repeat bg-center"

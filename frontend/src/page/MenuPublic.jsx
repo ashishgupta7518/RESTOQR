@@ -9,7 +9,7 @@ const MenuPublic = () => {
 
   useEffect(() => {
     axios
-      .get(`${API_BASE_URL}/api/public/menu/${id}`)
+      .get(`${API_BASE_URL}/public/menu/${id}`)
       .then((res) => setRestaurant(res.data))
       .catch(() => setRestaurant(null));
   }, [id]);

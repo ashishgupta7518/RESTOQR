@@ -12,7 +12,7 @@ const AdminDashboard = () => {
 
   const fetchAll = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/api/admin/restaurants`, {
+      const res = await axios.get(`${API_BASE_URL}/admin/restaurants`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRestaurants(res.data);

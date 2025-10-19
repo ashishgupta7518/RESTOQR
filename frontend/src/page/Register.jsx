@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "./../config";
+import toast, { Toaster } from "react-hot-toast";
 
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -10,16 +11,23 @@ const Register = () => {
   const handleRegister = async () => {
     try {
       await axios.post(`${API_BASE_URL}/auth/register`, form);
-      alert("Registered! Now login.");
-      navigate("/login"); // Navigate to login after successful registration
+      toast.success("Registered successfully! Now you can login.", {
+        duration: 3000,
+        position: "top-center",
+      });
+      setTimeout(() => navigate("/login"), 1500); // Navigate to login after successful registration
     } catch (err) {
       console.error(err);
-      alert("Registration failed!");
+      toast.error("Registration failed! Please try again.", {
+        duration: 3000,
+        position: "top-center",
+      });
     }
   };
 
   return (
     <div className="min-h-screen flex">
+      <Toaster />
       {/* Left Image Section */}
       <div
         className="hidden md:flex w-1/2 bg-cover bg-no-repeat bg-center"
