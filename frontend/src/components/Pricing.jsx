@@ -29,7 +29,7 @@ const Pricing = () => {
                                     <li key={i}>✔️ {feature}</li>
                                 ))}
                             </ul>
-                            <button className={`mt-4 w-full px-6 py-2 rounded-lg ${plan.featured ? 'bg-black text-white' : 'bg-gray-900 text-white'}`}>Get Started</button>
+                            <button className={`mt-4 w-full cursor-pointer px-6 py-2 rounded-lg ${plan.featured ? 'bg-black text-white' : 'bg-gray-900 text-white'}`}>Get Started</button>
                         </div>
                     ))}
                 </div>

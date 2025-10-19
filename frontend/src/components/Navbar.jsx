@@ -5,7 +5,10 @@ const Navbar = () => {
   return (
     <><nav className="flex justify-between items-center p-4 border-b border-gray-200">
       <div className="flex items-center space-x-2">
-        <span className="text-xl font-semibold">🍴 MenuQR</span>
+        <Link to="/">
+          <span className="text-xl font-semibold cursor-pointer">🍴 MenuQR</span>
+        </Link>
+
       </div>
       <div className="space-x-6 hidden md:flex">
         <a href="#" className="hover:text-blue-600">Home</a>

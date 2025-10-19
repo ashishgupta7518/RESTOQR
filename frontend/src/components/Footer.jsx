@@ -1,23 +1,28 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
     <>
-    <footer className="bg-gray-800 text-white">
+      <footer className="bg-gray-800 text-white">
         <div className="text-center py-12">
           <h2 className="text-2xl font-semibold mb-2">Ready to Digitize Your Restaurant Menu?</h2>
           <p className="mb-6 max-w-2xl mx-auto text-gray-300">
             Join thousands of restaurants already using MenuQR to provide a better dining experience for their customers.
           </p>
           <div className="flex justify-center space-x-4">
-            <button className="px-5 py-2 bg-white text-gray-900 rounded hover:bg-gray-200">Register Your Restaurant</button>
-            <button className="px-5 py-2 border border-white rounded hover:bg-white hover:text-gray-900">Contact Sales</button>
+            <button className="px-5 py-2 bg-white text-gray-900 rounded hover:bg-gray-200 cursor-pointer">Register Your Restaurant</button>
+            <button className="px-5 py-2 border border-white rounded hover:bg-white hover:text-gray-900 cursor-pointer">Contact Sales</button>
           </div>
         </div>
         <div className="bg-gray-900 py-10 px-6 md:px-20">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto text-sm text-gray-300">
             <div>
-              <div className="text-white text-lg font-semibold mb-2">🍴 MenuQR</div>
+              <Link to="/">
+
+                <div className="text-white text-lg font-semibold mb-2 cursor-pointer">🍴 MenuQR</div>
+              </Link>
+
               <p className="mb-4">The easiest way to create and manage digital menus for your restaurant.</p>
               <div className="flex space-x-4 text-xl">
                 <i className="fab fa-facebook"></i>
