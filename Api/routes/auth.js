@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Restaurant from "../models/Restaurant.js";
-import RestaurantProfile from "../models/RestaurantProfile.js";
+
 
 const router = express.Router();
 
@@ -73,7 +73,7 @@ router.post("/restaurant/profile", async (req, res) => {
     if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
 
     // Check if profile exists
-    let profile = await RestaurantProfile.findOne({ restaurantId: restaurant._id });
+    let profile = await Restaurant.findOne({ restaurantId: restaurant._id });
 
     if (profile) {
       profile.ownerName = ownerName || profile.ownerName;
@@ -85,7 +85,7 @@ router.post("/restaurant/profile", async (req, res) => {
       await profile.save();
       res.status(200).json({ message: "Profile updated successfully", profile });
     } else {
-      const newProfile = new RestaurantProfile({
+      const newProfile = new Restaurant({
         restaurantId: restaurant._id,
         ownerName,
         contact,
@@ -113,7 +113,7 @@ router.get("/restaurant/profile", async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (decoded.role !== "restaurant") return res.status(403).json({ message: "Forbidden" });
 
-    const profile = await RestaurantProfile.findOne({ restaurantId: decoded.id });
+    const profile = await Restaurant.findOne({ restaurantId: decoded.id });
 
     if (!profile) return res.status(404).json({ message: "Profile not found" });
 
