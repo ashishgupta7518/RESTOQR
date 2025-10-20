@@ -12,12 +12,26 @@ const categorySchema = new mongoose.Schema({
   items: [itemSchema],
 });
 
-const restaurantSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String,
-  menu: [categorySchema],
-}, { timestamps: true });
+const restaurantSchema = new mongoose.Schema(
+  {
+    // ✅ Login info
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+
+    // ✅ Profile info (moved here from RestaurantProfile)
+    ownerName: { type: String },
+    contact: { type: String },
+    address: { type: String },
+    latitude: { type: Number },
+    longitude: { type: Number },
+    description: { type: String },
+
+    // ✅ Menu info
+    menu: [categorySchema],
+  },
+  { timestamps: true }
+);
 
 const Restaurant = mongoose.model("Restaurant", restaurantSchema);
 export default Restaurant;

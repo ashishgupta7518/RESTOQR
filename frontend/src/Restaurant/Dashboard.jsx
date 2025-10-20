@@ -5,7 +5,7 @@ import { PlusCircle, Trash2, Edit2, Image, Check, X } from "lucide-react";
 import API_BASE_URL from "./../config";
 import toast, { Toaster } from "react-hot-toast";
 
-const RestaurantDashboard = () => {
+const RestaurantMenu = () => {
   const [menu, setMenu] = useState([]);
   const [category, setCategory] = useState("");
   const [item, setItem] = useState({ name: "", price: "", description: "" });
@@ -242,4 +242,4 @@ const RestaurantDashboard = () => {
   );
 };
 
-export default RestaurantDashboard;
+export default RestaurantMenu;

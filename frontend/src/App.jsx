@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./page/Login";
 import Register from "./page/Register";
-import RestaurantDashboard from "./Restaurant/Dashboard";
+import RestaurantDashboard from "./Restaurant/RestaurantDashboard";
 import AdminDashboard from "./admin/AdminDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import MenuPublic from "./page/MenuPublic";
