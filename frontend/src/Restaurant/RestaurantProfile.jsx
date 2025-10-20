@@ -1,9 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import API_BASE_URL from "../config";
 import toast, { Toaster } from "react-hot-toast";
-
-
 
 const RestaurantProfile = () => {
     const [formData, setFormData] = useState({
@@ -18,6 +16,38 @@ const RestaurantProfile = () => {
 
     const [loading, setLoading] = useState(false);
     const token = localStorage.getItem("token");
+
+    // Fetch profile on component mount
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (!token) return;
+
+            try {
+                setLoading(true);
+                const res = await axios.get(`http://localhost:5000/api/auth/restaurant/profile`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                setFormData({
+                    email: res.data.email || "",
+                    ownerName: res.data.ownerName || "",
+                    contact: res.data.contact || "",
+                    address: res.data.address || "",
+                    latitude: res.data.latitude || "",
+                    longitude: res.data.longitude || "",
+                    description: res.data.description || "",
+                });
+                toast.success("✅ Profile loaded successfully!");
+            } catch (err) {
+                console.error(err);
+                toast.error(err.response?.data?.message || "❌ Failed to load profile.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, [token]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,20 +70,11 @@ const RestaurantProfile = () => {
                     const res = await fetch(
                         `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=7e87fb2d52b04d2eae5ea890f18664c8`
                     );
-
                     const data = await res.json();
 
                     if (data?.results?.length > 0) {
                         const address = data.results[0].formatted;
-
-                        // ✅ Use functional state update to avoid stale closure
-                        setFormData((prev) => ({
-                            ...prev,
-                            address,
-                            latitude,
-                            longitude,
-                        }));
-
+                        setFormData((prev) => ({ ...prev, address, latitude, longitude }));
                         toast.dismiss();
                         toast.success("📍 Location fetched successfully!");
                     } else {
@@ -74,30 +95,20 @@ const RestaurantProfile = () => {
         );
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            const res = await axios.post(
-                `http://localhost:5000/api/auth/restaurant/profile`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const res = await axios.post(`http://localhost:5000/api/auth/restaurant/profile`, formData, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
-            toast.success(res.data.message || "✅ Profile created successfully!");
+            toast.success(res.data.message || "✅ Profile updated successfully!");
             console.log("Profile Response:", res.data);
         } catch (err) {
             console.error(err);
-            toast.error(
-                err.response?.data?.message || "❌ Something went wrong. Please try again."
-            );
+            toast.error(err.response?.data?.message || "❌ Something went wrong.");
         } finally {
             setLoading(false);
         }
@@ -113,21 +124,18 @@ const RestaurantProfile = () => {
                         alt="Restaurant"
                         className="w-7 h-7 mr-2"
                     />
-                    Create Restaurant Profile
+                    Restaurant Profile
                 </h2>
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-5">
                     {/* Owner Name */}
                     <div>
-                        <label className="block mb-1 text-gray-700 font-medium">
-                            Owner Name
-                        </label>
+                        <label className="block mb-1 text-gray-700 font-medium">Owner Name</label>
                         <input
                             type="text"
                             name="ownerName"
                             value={formData.ownerName}
                             onChange={handleChange}
-                            placeholder="Enter owner name"
                             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-gray-800 focus:outline-none"
                             required
                         />
@@ -136,37 +144,31 @@ const RestaurantProfile = () => {
                     {/* Contact & Email */}
                     <div className="grid grid-cols-2 gap-5">
                         <div>
-                            <label className="block mb-1 text-gray-700 font-medium">
-                                Contact Number
-                            </label>
+                            <label className="block mb-1 text-gray-700 font-medium">Contact Number</label>
                             <input
                                 type="text"
                                 name="contact"
                                 value={formData.contact}
                                 onChange={handleChange}
-                                placeholder="Enter contact number"
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-gray-800 focus:outline-none"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block mb-1 text-gray-700 font-medium">
-                                Email
-                            </label>
+                            <label className="block mb-1 text-gray-700 font-medium">Email</label>
                             <input
                                 type="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                placeholder="Enter email"
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-gray-800 focus:outline-none"
                                 required
                             />
                         </div>
                     </div>
 
-                    {/* Address with Get Location */}
+                    {/* Address */}
                     <div>
                         <div className="flex items-center justify-between mb-1">
                             <label className="text-gray-700 font-medium">Address</label>
@@ -182,7 +184,6 @@ const RestaurantProfile = () => {
                             name="address"
                             value={formData.address}
                             onChange={handleChange}
-                            placeholder="Enter restaurant address"
                             className="w-full border border-gray-300 rounded-lg px-4 py-2 h-20 focus:ring-2 focus:ring-gray-800 focus:outline-none"
                             required
                         ></textarea>
@@ -190,19 +191,16 @@ const RestaurantProfile = () => {
 
                     {/* Description */}
                     <div>
-                        <label className="block mb-1 text-gray-700 font-medium">
-                            Description
-                        </label>
+                        <label className="block mb-1 text-gray-700 font-medium">Description</label>
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            placeholder="Write a short description..."
                             className="w-full border border-gray-300 rounded-lg px-4 py-2 h-24 focus:ring-2 focus:ring-gray-800 focus:outline-none"
                         ></textarea>
                     </div>
 
-                    {/* Submit Button */}
+                    {/* Submit */}
                     <button
                         type="submit"
                         disabled={loading}

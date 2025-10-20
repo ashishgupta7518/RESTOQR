@@ -19,6 +19,7 @@ const Login = () => {
       const { token, role } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      
 
       if (role === "admin") {
 
