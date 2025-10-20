@@ -64,46 +64,29 @@ router.post("/register", async (req, res) => {
 // ======================= CREATE / UPDATE PROFILE =======================
 router.post("/restaurant/profile", async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ message: "Unauthorized" });
+    const { email, ownerName, contact, address, latitude, longitude, description } = req.body;
 
-    const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded.role !== "restaurant") return res.status(403).json({ message: "Forbidden" });
-
-    const { ownerName, contact, address, latitude, longitude, description } = req.body;
-
-    const restaurant = await Restaurant.findById(decoded.id);
+    // Find restaurant using email
+    const restaurant = await Restaurant.findOne({ email });
     if (!restaurant) return res.status(404).json({ message: "Restaurant not found" });
 
-    // Check if profile exists
-    let profile = await Restaurant.findOne({ restaurantId: restaurant._id });
+    // Update profile info in the same document
+    restaurant.ownerName = ownerName || restaurant.ownerName;
+    restaurant.contact = contact || restaurant.contact;
+    restaurant.address = address || restaurant.address;
+    restaurant.latitude = latitude ? Number(latitude) : restaurant.latitude;
+    restaurant.longitude = longitude ? Number(longitude) : restaurant.longitude;
+    restaurant.description = description || restaurant.description;
 
-    if (profile) {
-      profile.ownerName = ownerName || profile.ownerName;
-      profile.contact = contact || profile.contact;
-      profile.address = address || profile.address;
-      profile.latitude = latitude ? Number(latitude) : profile.latitude;
-      profile.longitude = longitude ? Number(longitude) : profile.longitude;
-      profile.description = description || profile.description;
-      await profile.save();
-      res.status(200).json({ message: "Profile updated successfully", profile });
-    } else {
-      const newProfile = new Restaurant({
-        restaurantId: restaurant._id,
-        ownerName,
-        contact,
-        address,
-        latitude,
-        longitude,
-        description,
-      });
-      await newProfile.save();
-      res.status(201).json({ message: "Profile created successfully", newProfile });
-    }
+    const updated = await restaurant.save();
+
+    res.status(200).json({
+      message: "Profile saved successfully",
+      restaurant: updated,
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error updating restaurant profile" });
+    res.status(500).json({ message: "Error saving restaurant profile" });
   }
 });
 
