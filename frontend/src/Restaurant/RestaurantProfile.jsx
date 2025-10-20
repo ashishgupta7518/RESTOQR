@@ -43,10 +43,10 @@ const RestaurantProfile = () => {
                     description: res.data.description || "",
                 });
 
-                toast.success("✅ Profile loaded successfully!");
+                toast.success("Profile loaded successfully!");
             } catch (err) {
                 console.error(err);
-                toast.error(err.response?.data?.message || "❌ Failed to load profile.");
+                toast.error(err.response?.data?.message || "Failed to load profile.");
             } finally {
                 setLoading(false);
             }
@@ -63,7 +63,7 @@ const RestaurantProfile = () => {
 
     const handleGetLocation = () => {
         if (!navigator.geolocation) {
-            toast.error("❌ Geolocation is not supported by your browser.");
+            toast.error("Geolocation is not supported by your browser.");
             return;
         }
 
@@ -83,7 +83,7 @@ const RestaurantProfile = () => {
                         const address = data.results[0].formatted;
                         setFormData((prev) => ({ ...prev, address, latitude, longitude }));
                         toast.dismiss();
-                        toast.success("📍 Location fetched successfully!");
+                        toast.success("Location fetched successfully!");
                     } else {
                         toast.dismiss();
                         toast.error("Address not found. Try again.");
@@ -111,7 +111,7 @@ const RestaurantProfile = () => {
             const token = localStorage.getItem("token");
 
             if (!token) {
-                toast.error("❌ You are not logged in!");
+                toast.error("You are not logged in!");
                 setLoading(false);
                 return;
             }
@@ -119,11 +119,11 @@ const RestaurantProfile = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
-            toast.success(res.data.message || "✅ Profile updated successfully!");
+            toast.success(res.data.message || "Profile updated successfully!");
             console.log("Profile Response:", res.data);
         } catch (err) {
             console.error(err);
-            toast.error(err.response?.data?.message || "❌ Something went wrong.");
+            toast.error(err.response?.data?.message || "Something went wrong.");
         } finally {
             setLoading(false);
         }

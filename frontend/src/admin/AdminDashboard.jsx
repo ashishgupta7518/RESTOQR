@@ -25,17 +25,17 @@ const AdminDashboard = () => {
     fetchAll();
   }, []);
 
-const filteredRestaurants = restaurants.filter((r) =>
+  const filteredRestaurants = restaurants.filter((r) =>
   (r.name?.toLowerCase().includes(search.toLowerCase()) ||
-   r.email?.toLowerCase().includes(search.toLowerCase()))
-);
+    r.email?.toLowerCase().includes(search.toLowerCase()))
+  );
 
 
   const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  window.location.href = "/login";
-};
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "/login";
+  };
 
   return (
     <div className="min-h-screen bg-white p-6 text-sm">
@@ -44,11 +44,11 @@ const filteredRestaurants = restaurants.filter((r) =>
           🍴 Restaurant Admin Dashboard
         </h2>
 
-        
-        <button onClick={handleLogout} className="flex items-center gap-2 border px-4 py-1.5 rounded hover:bg-gray-100">
+
+        <button onClick={handleLogout} className="flex items-center gap-2 border px-4  bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold py-2 rounded-lg">
           <LogOut className="w-4 h-4" /> Logout
         </button>
-        
+
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

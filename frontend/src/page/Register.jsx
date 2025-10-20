@@ -6,22 +6,32 @@ import toast, { Toaster } from "react-hot-toast";
 
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    if (!form.name || !form.email || !form.password) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true);
     try {
       await axios.post(`${API_BASE_URL}/auth/register`, form);
       toast.success("Registered successfully! Now you can login.", {
         duration: 3000,
         position: "top-center",
       });
-      setTimeout(() => navigate("/login"), 1500); // Navigate to login after successful registration
+
+      setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
       console.error(err);
       toast.error("Registration failed! Please try again.", {
         duration: 3000,
         position: "top-center",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,9 +60,8 @@ const Register = () => {
                 type="text"
                 placeholder="Restaurant Name"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onChange={(e) =>
-                  setForm({ ...form, name: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                value={form.name}
               />
             </div>
             <div>
@@ -61,9 +70,8 @@ const Register = () => {
                 type="email"
                 placeholder="Email"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                value={form.email}
               />
             </div>
             <div>
@@ -72,19 +80,50 @@ const Register = () => {
                 type="password"
                 placeholder="Password"
                 className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onChange={(e) =>
-                  setForm({ ...form, password: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                value={form.password}
               />
             </div>
+
+            {/* Submit Button with Spinner */}
             <button
               type="button"
               onClick={handleRegister}
-              className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-700 transition duration-200 cursor-pointer"
+              disabled={loading}
+              className={`w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-2 rounded transition duration-200 cursor-pointer ${
+                loading ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-700"
+              }`}
             >
-              Register
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8z"
+                    ></path>
+                  </svg>
+                  <span>Registering...</span>
+                </>
+              ) : (
+                "Register"
+              )}
             </button>
 
+            {/* Redirect to Login */}
             <div className="text-center">
               <p className="text-sm mt-2">
                 Already have an account?{" "}

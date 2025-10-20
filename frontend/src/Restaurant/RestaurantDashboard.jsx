@@ -1,10 +1,17 @@
 import { useState } from "react";
-
 import RestaurantMenu from "./Dashboard";
 import RestaurantProfile from "./RestaurantProfile";
+import { LogOut } from "lucide-react";
 
 const RestaurantDashboard = () => {
     const [activeSection, setActiveSection] = useState("profile"); // default: profile
+
+    const handleLogout = () => {
+        // Clear token or session
+        localStorage.removeItem("token");
+        sessionStorage.clear();
+        window.location.href = "/login"; // redirect to login page
+    };
 
     const renderContent = () => {
         switch (activeSection) {
@@ -24,44 +31,57 @@ const RestaurantDashboard = () => {
     return (
         <div className="flex h-screen">
             {/* Sidebar */}
-            <div className="w-64 bg-gray-900 text-white flex flex-col p-6 fixed h-full">
-                <h2 className="text-2xl font-bold mb-8 text-center border-b border-gray-700 pb-4">
-                    Restaurant Panel
-                </h2>
+            <div className="w-64 bg-gray-900 text-white flex flex-col justify-between p-6 fixed h-full">
+                <div>
+                    <h2 className="text-2xl font-bold mb-8 text-center border-b border-gray-700 pb-4">
+                        Restaurant Panel
+                    </h2>
 
-                <ul className="space-y-4">
-                    <li
-                        onClick={() => setActiveSection("profile")}
-                        className={`cursor-pointer p-3 rounded-lg hover:bg-gray-700 ${activeSection === "profile" ? "bg-gray-700" : ""
-                            }`}
-                    >
-                        🍽️ Create Restaurant Profile
-                    </li>
+                    <ul className="space-y-3">
+                        <li
+                            onClick={() => setActiveSection("profile")}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "profile" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            🍽️ <span>Create Restaurant Profile</span>
+                        </li>
 
-                    <li
-                        onClick={() => setActiveSection("menu")}
-                        className={`cursor-pointer p-3 rounded-lg hover:bg-gray-700 ${activeSection === "menu" ? "bg-gray-700" : ""
-                            }`}
-                    >
-                        📜 Create Menu
-                    </li>
+                        <li
+                            onClick={() => setActiveSection("menu")}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "menu" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            📜 <span>Create Menu</span>
+                        </li>
 
-                    <li
-                        onClick={() => setActiveSection("settings")}
-                        className={`cursor-pointer p-3 rounded-lg hover:bg-gray-700 ${activeSection === "settings" ? "bg-gray-700" : ""
-                            }`}
-                    >
-                        ⚙️ Settings
-                    </li>
+                        <li
+                            onClick={() => setActiveSection("settings")}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "settings" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            ⚙️ <span>Settings</span>
+                        </li>
 
-                    <li
-                        onClick={() => setActiveSection("help")}
-                        className={`cursor-pointer p-3 rounded-lg hover:bg-gray-700 ${activeSection === "help" ? "bg-gray-700" : ""
-                            }`}
+                        <li
+                            onClick={() => setActiveSection("help")}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "help" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            💬 <span>Help</span>
+                        </li>
+                    </ul>
+                </div>
+
+                {/* Logout Button */}
+                <div className="border-t border-gray-700 pt-4">
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold py-2 rounded-lg"
                     >
-                        💬 Help
-                    </li>
-                </ul>
+                        <LogOut className="w-5 h-5" />
+                        <span>Logout</span>
+                    </button>
+                </div>
             </div>
 
             {/* Main Content Area */}
@@ -73,3 +93,4 @@ const RestaurantDashboard = () => {
 };
 
 export default RestaurantDashboard;
+    
