@@ -27,7 +27,7 @@ const RestaurantProfile = () => {
             try {
                 setLoading(true);
                 const res = await axios.get(
-                    `http://localhost:5000/api/auth/restaurant/profile/${restaurantId}`,
+                    `${API_BASE_URL}/auth/restaurant/profile/${restaurantId}`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
@@ -115,7 +115,7 @@ const RestaurantProfile = () => {
                 setLoading(false);
                 return;
             }
-            const res = await axios.post(`http://localhost:5000/api/auth/restaurant/profile`, formData, {
+            const res = await axios.post(`${API_BASE_URL}/auth/restaurant/profile`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
