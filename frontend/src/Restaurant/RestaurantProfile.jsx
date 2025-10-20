@@ -15,18 +15,23 @@ const RestaurantProfile = () => {
     });
 
     const [loading, setLoading] = useState(false);
-    const token = localStorage.getItem("token");
+    const restaurantId = localStorage.getItem("userId");
+    console.log("Restaurant ID:", restaurantId);
 
     // Fetch profile on component mount
     useEffect(() => {
         const fetchProfile = async () => {
-            if (!token) return;
+            const token = localStorage.getItem("token");
+            if (!restaurantId || !token) return;
 
             try {
                 setLoading(true);
-                const res = await axios.get(`http://localhost:5000/api/auth/restaurant/profile`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                const res = await axios.get(
+                    `http://localhost:5000/api/auth/restaurant/profile/${restaurantId}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
 
                 setFormData({
                     email: res.data.email || "",
@@ -37,6 +42,7 @@ const RestaurantProfile = () => {
                     longitude: res.data.longitude || "",
                     description: res.data.description || "",
                 });
+
                 toast.success("✅ Profile loaded successfully!");
             } catch (err) {
                 console.error(err);
@@ -47,7 +53,8 @@ const RestaurantProfile = () => {
         };
 
         fetchProfile();
-    }, [token]);
+    }, [restaurantId]);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -100,6 +107,14 @@ const RestaurantProfile = () => {
         setLoading(true);
 
         try {
+
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                toast.error("❌ You are not logged in!");
+                setLoading(false);
+                return;
+            }
             const res = await axios.post(`http://localhost:5000/api/auth/restaurant/profile`, formData, {
                 headers: { Authorization: `Bearer ${token}` },
             });

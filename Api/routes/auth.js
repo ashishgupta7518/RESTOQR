@@ -13,7 +13,9 @@ router.post("/login", async (req, res) => {
   // Admin login
   if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
     const token = jwt.sign({ role: "admin", email }, process.env.JWT_SECRET, { expiresIn: "1d" });
-    return res.json({ _id, token, role: "admin" });
+
+    // For admin, there’s no _id in DB, so we can just send a placeholder id
+    return res.json({ token, role: "admin", id: "admin" });
   }
 
   // Restaurant login
@@ -25,12 +27,14 @@ router.post("/login", async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign({ id: user._id, role: "restaurant" }, process.env.JWT_SECRET, { expiresIn: "1d" });
+
     res.json({ token, role: "restaurant", id: user._id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Login error" });
   }
 });
+
 
 // ======================= REGISTER =======================
 router.post("/register", async (req, res) => {
@@ -104,20 +108,30 @@ router.post("/restaurant/profile", async (req, res) => {
 });
 
 // ======================= GET PROFILE =======================
-router.get("/restaurant/profile", async (req, res) => {
+router.get("/restaurant/profile/:id", async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ message: "Unauthorized" });
+    const restaurantId = req.params.id;
+    console.log("Fetching profile for Restaurant ID:", restaurantId);
 
-    const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (decoded.role !== "restaurant") return res.status(403).json({ message: "Forbidden" });
+    // Fetch restaurant by ID
+    const restaurant = await Restaurant.findById(restaurantId);
 
-    const profile = await Restaurant.findOne({ restaurantId: decoded.id });
+    if (!restaurant) {
+      return res.status(404).json({ message: "Profile not found" });
+    }
 
-    if (!profile) return res.status(404).json({ message: "Profile not found" });
+    // Prepare the response
+    const response = {
+      email: restaurant.email || "",
+      ownerName: restaurant.ownerName || "",
+      contact: restaurant.contact || "",
+      address: restaurant.address || "",
+      latitude: restaurant.latitude || null,
+      longitude: restaurant.longitude || null,
+      description: restaurant.description || "",
+    };
 
-    res.status(200).json(profile);
+    res.status(200).json(response);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error fetching profile" });

@@ -16,10 +16,12 @@ const Login = () => {
         password,
       });
 
-      const { token, role } = res.data;
+      const { token, role, id } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
-      
+      localStorage.setItem("userId", id);
+
+
 
       if (role === "admin") {
 
