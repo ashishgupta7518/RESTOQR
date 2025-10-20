@@ -3,10 +3,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "./../config";
 import toast, { Toaster } from "react-hot-toast";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -16,7 +18,7 @@ const Login = () => {
       return;
     }
 
-    setLoading(true); // Start loader
+    setLoading(true);
     try {
       const res = await axios.post(`${API_BASE_URL}/auth/login`, {
         email,
@@ -42,7 +44,7 @@ const Login = () => {
         position: "top-center",
       });
     } finally {
-      setLoading(false); // Stop loader
+      setLoading(false);
     }
   };
 
@@ -54,7 +56,7 @@ const Login = () => {
         className="hidden md:flex w-1/2 bg-cover bg-no-repeat bg-center"
         style={{
           backgroundImage:
-            "url('https://plus.unsplash.com/premium_photo-1671403964040-3fa56d33f44b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fGZvb2R8ZW58MHx8MHx8fDA%3D')",
+            "url('https://plus.unsplash.com/premium_photo-1671403964040-3fa56d33f44b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0')",
         }}
       ></div>
 
@@ -75,23 +77,39 @@ const Login = () => {
                 value={email}
               />
             </div>
+
+            {/* Password Field with Eye Icon */}
             <div>
               <label className="block mb-1 font-medium">Password</label>
-              <input
-                type="password"
-                placeholder="Password"
-                className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  className="w-full border border-gray-300 rounded px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <AiOutlineEyeInvisible size={22} />
+                  ) : (
+                    <AiOutlineEye size={22} />
+                  )}
+                </button>
+              </div>
             </div>
 
             <button
               type="button"
               onClick={handleLogin}
               disabled={loading}
-              className={`w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-2 rounded transition duration-200 cursor-pointer ${loading ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-700"
-                }`}
+              className={`w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-2 rounded transition duration-200 cursor-pointer ${
+                loading ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-700"
+              }`}
             >
               {loading ? (
                 <>
