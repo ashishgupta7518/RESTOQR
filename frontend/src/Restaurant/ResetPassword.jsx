@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { toast } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import API_BASE_URL from "../config";
 
@@ -48,6 +48,7 @@ const ResetPassword = () => {
   return (
     <div className="w-full bg-gray-50 min-h-screen p-6">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-8">
+        <Toaster />
         {/* Header */}
         <div className="flex items-center justify-between mb-6 border-b pb-4">
           <h2 className="text-2xl font-bold text-gray-800">
