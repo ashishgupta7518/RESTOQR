@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import RestaurantMenu from "./Dashboard";
 import RestaurantProfile from "./RestaurantProfile";
 import { LogOut } from "lucide-react";
@@ -11,16 +11,23 @@ import API_BASE_URL from "./../config";
 const RestaurantDashboard = () => {
     const [activeSection, setActiveSection] = useState("profile"); // default: profile
     const [pendingCount, setPendingCount] = useState(0);
+    const previousCount = useRef(0); // track previous pending count
 
     const restaurantId = localStorage.getItem("userId");
 
     // Fetch pending orders count
     const fetchPendingCount = async () => {
         try {
-            const { data } = await axios.get(
-                `${API_BASE_URL}/order/restaurant/${restaurantId}`
-            );
-            const pending = data.filter((order) => order.status === "pending").length;
+            const { data } = await axios.get(`${API_BASE_URL}/order/restaurant/${restaurantId}`);
+            const pending = data.filter(order => order.status === "pending").length;
+
+            // Play notification sound if new order comes
+            if (pending > previousCount.current) {
+                const notificationSound = new Audio("/mixkit-bell-notification-933.wav"); // put notification.mp3 in public folder
+                notificationSound.play();
+            }
+
+            previousCount.current = pending;
             setPendingCount(pending);
         } catch (err) {
             console.error("Error fetching orders:", err);
@@ -54,8 +61,7 @@ const RestaurantDashboard = () => {
             case "change-password":
                 return <div className="p-6"><ResetPassword /></div>;
             case "orders":
-                return <div className="p-6"> <RestaurantOrders restaurantId={restaurantId} />
-                </div>;
+                return <div className="p-6"><RestaurantOrders restaurantId={restaurantId} /></div>;
             case "Notification":
                 return <div className="p-6"><NotificationsPanel restaurantId={restaurantId} /></div>;
             default:
@@ -117,7 +123,7 @@ const RestaurantDashboard = () => {
 
                         <li
                             onClick={() => setActiveSection("Notification")}
-                            className={`cursor-pointer relative p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "Notification" ? "bg-gray-700" : ""}`}
+                            className={` cursor-pointer relative p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "Notification" ? "bg-gray-700" : ""}`}
                         >
                             🔔 <span>Notification</span>
                             {pendingCount > 0 && (
