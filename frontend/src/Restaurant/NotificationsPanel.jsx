@@ -1,95 +1,234 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Bell } from "lucide-react";
-import API_BASE_URL from "./../config"; // make sure this is correct
+import { Search, Filter, Download } from "lucide-react";
+import API_BASE_URL from "../config";
 
 const NotificationsPanel = ({ restaurantId }) => {
-    const [notifications, setNotifications] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [filtered, setFiltered] = useState([]);
+    const [statusFilter, setStatusFilter] = useState("All");
     const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState("");
 
-    // Fetch notifications from API
-    const fetchNotifications = async () => {
+    // ✅ Fetch all orders periodically
+    const fetchOrders = async () => {
         try {
             const { data } = await axios.get(
                 `${API_BASE_URL}/order/notifications/${restaurantId}`
             );
-            setNotifications(data);
+            setOrders(data);
             setLoading(false);
         } catch (err) {
-            console.error("Error fetching notifications:", err);
+            console.error("Error fetching orders:", err);
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchNotifications();
-
-        // Poll every 5 seconds for new orders
-        const interval = setInterval(fetchNotifications, 5000);
-
-        return () => clearInterval(interval); // cleanup
+        fetchOrders();
+        const interval = setInterval(fetchOrders, 5000);
+        return () => clearInterval(interval);
     }, [restaurantId]);
 
-    if (loading) {
+    // ✅ Automatically apply filter and search when data or filters change
+    useEffect(() => {
+        let result = [...orders];
+
+        // Filter by status
+        if (statusFilter !== "All") {
+            if (statusFilter === "approved") {
+                result = result.filter(
+                    (o) => o.status === "approved" || o.status === "served"
+                );
+            } else {
+                result = result.filter((o) => o.status === statusFilter);
+            }
+        }
+
+        // Filter by search term
+        if (search.trim() !== "") {
+            const value = search.toLowerCase();
+            result = result.filter(
+                (o) =>
+                    o.customerName?.toLowerCase().includes(value) ||
+                    o._id?.toLowerCase().includes(value) ||
+                    o.customerMobile?.includes(value)
+            );
+        }
+
+        setFiltered(result);
+    }, [orders, statusFilter, search]);
+
+    // ✅ Event handlers
+    const handleFilter = (status) => setStatusFilter(status);
+    const handleSearch = (e) => setSearch(e.target.value);
+
+    // ✅ Stats calculation (Approved includes Served)
+    const stats = {
+        total: orders.length,
+        pending: orders.filter((o) => o.status === "pending").length,
+        approved: orders.filter(
+            (o) => o.status === "approved" || o.status === "served"
+        ).length,
+        rejected: orders.filter((o) => o.status === "rejected").length,
+    };
+
+    if (loading)
         return (
-            <div className="flex justify-center items-center p-6">
-                <p>Loading notifications...</p>
+            <div className="flex justify-center items-center h-64 text-gray-600 font-medium">
+                Loading live orders...
             </div>
         );
-    }
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <Bell className="w-6 h-6 text-yellow-500" /> Live Order Notifications
-            </h2>
-
-            {notifications.length === 0 && (
-                <p className="text-gray-500">No orders yet.</p>
-            )}
-
-            <div className="flex flex-col gap-4">
-                {notifications.map((order) => (
-                    <div
-                        key={order.orderId || order._id}
-                        className="bg-white p-4 rounded-2xl shadow hover:shadow-lg transition flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
-                    >
-                        <div>
-                            <p className="font-semibold text-gray-800">
-                                {order.customerName} (Table: {order.table})
-                            </p>
-                            <p className="text-gray-500 text-sm">{order.customerMobile}</p>
-                        </div>
-
-                        <div className="flex-1">
-                            <ul className="list-disc list-inside text-gray-700">
-                                {order.items.map((item, index) => (
-                                    <li key={index}>
-                                        {item.name} x{item.quantity} — ₹{item.total}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="text-right md:text-left">
-                            <p className="font-semibold text-gray-800">
-                                Total: ₹{order.totalPrice}
-                            </p>
-                            <p
-                                className={`text-sm mt-1 ${order.status === "pending"
-                                    ? "text-yellow-500"
-                                    : "text-green-500"
-                                    }`}
-                            >
-                                {order.status.toUpperCase()}
-                            </p>
-                            <p className="text-xs text-gray-400 mt-1">
-                                {new Date(order.orderTime).toLocaleTimeString()}
-                            </p>
-                        </div>
-                    </div>
-                ))}
+        <div className="p-6 bg-gray-50 min-h-screen">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-800">📦 Live Orders Dashboard</h2>
             </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <StatCard title="Total Orders" value={stats.total} />
+                <StatCard title="Pending Orders" value={stats.pending} color="yellow" />
+                <StatCard title="Approved Orders" value={stats.approved} color="green" />
+                <StatCard title="Rejected Orders" value={stats.rejected} color="red" />
+            </div>
+
+            {/* Filters & Search */}
+            <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+                <div className="flex items-center gap-2">
+                    {["All", "pending", "approved", "rejected"].map((s) => (
+                        <button
+                            key={s}
+                            onClick={() => handleFilter(s)}
+                            className={`px-4 py-2 text-sm rounded-lg border transition-all ${statusFilter === s
+                                    ? "bg-blue-600 text-white border-blue-600"
+                                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                                }`}
+                        >
+                            {s.charAt(0).toUpperCase() + s.slice(1)}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-2.5 text-gray-400 w-5 h-5" />
+                        <input
+                            type="text"
+                            placeholder="Search by ID, name, phone..."
+                            value={search}
+                            onChange={handleSearch}
+                            className="pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm w-64 focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                    </div>
+
+                    <button className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition">
+                        <Filter className="w-4 h-4" />
+                        Filter
+                    </button>
+
+                    <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition">
+                        <Download className="w-4 h-4" />
+                        Export
+                    </button>
+                </div>
+            </div>
+
+            {/* Orders Table */}
+            <div className="bg-white rounded-2xl shadow border border-gray-200 overflow-hidden">
+                <table className="w-full text-left text-sm text-gray-700">
+                    <thead className="bg-gray-100 text-gray-600 text-sm uppercase">
+                        <tr>
+                            <th className="px-6 py-3">Order ID</th>
+                            <th className="px-6 py-3">Customer</th>
+                            <th className="px-6 py-3">Phone</th>
+                            <th className="px-6 py-3">Items</th>
+                            <th className="px-6 py-3">Total</th>
+                            <th className="px-6 py-3">Status</th>
+                            <th className="px-6 py-3">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filtered.length === 0 ? (
+                            <tr>
+                                <td colSpan="7" className="text-center py-6 text-gray-500 font-medium">
+                                    No orders found
+                                </td>
+                            </tr>
+                        ) : (
+                            filtered.map((order, i) => (
+                                <tr
+                                    key={i}
+                                    className="border-b border-gray-100 hover:bg-gray-50 transition"
+                                >
+                                    <td className="px-6 py-4 font-medium text-gray-800">
+                                        #{order._id?.slice(-6).toUpperCase()}
+                                    </td>
+                                    <td className="px-6 py-4">{order.customerName}</td>
+                                    <td className="px-6 py-4">{order.customerMobile}</td>
+                                    <td className="px-6 py-4">
+                                        {order.items
+                                            .map((item) => `${item.name} x${item.quantity}`)
+                                            .slice(0, 2)
+                                            .join(", ")}
+                                        {order.items.length > 2 && (
+                                            <span className="text-gray-400">
+                                                {" "}
+                                                +{order.items.length - 2} more
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 font-semibold">
+                                        ₹{order.totalPrice}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span
+                                            className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === "pending"
+                                                    ? "bg-yellow-100 text-yellow-700"
+                                                    : order.status === "approved" ||
+                                                        order.status === "served"
+                                                        ? "bg-green-100 text-green-700"
+                                                        : "bg-red-100 text-red-700"
+                                                }`}
+                                        >
+                                            {order.status?.toUpperCase()}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-500">
+                                        {new Date(order.orderTime).toLocaleDateString()}{" "}
+                                        <span className="text-xs text-gray-400">
+                                            {new Date(order.orderTime).toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+};
+
+const StatCard = ({ title, value, color }) => {
+    const colorMap = {
+        yellow: "text-yellow-600 bg-yellow-50",
+        green: "text-green-600 bg-green-50",
+        red: "text-red-600 bg-red-50",
+    };
+
+    return (
+        <div
+            className={`rounded-xl shadow-sm border border-gray-200 p-5 bg-white flex flex-col justify-center items-start ${colorMap[color] || ""
+                }`}
+        >
+            <p className="text-sm text-gray-500 font-medium">{title}</p>
+            <h3 className="text-2xl font-bold mt-2">{value}</h3>
         </div>
     );
 };

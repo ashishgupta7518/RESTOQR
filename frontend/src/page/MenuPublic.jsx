@@ -5,7 +5,7 @@ import { ShoppingCart, Filter, Star, Flame, X } from "lucide-react";
 import API_BASE_URL from "./../config";
 import toast, { Toaster } from "react-hot-toast";
 
- 
+
 
 const MenuPublic = () => {
   const { id } = useParams();
@@ -256,15 +256,15 @@ const MenuPublic = () => {
 
                   try {
                     await axios.post(`${API_BASE_URL}/order/restaurant`, orderPayload);
-                  
+
                     toast.success("Order placed successfully!", {
-        duration: 3000,
-        position: "top-center",
-      });
+                      duration: 3000,
+                      position: "top-center",
+                    });
                     setCart({});
                   } catch (err) {
                     console.error(err);
-                   
+
 
                     toast.error("Failed to place order.");
                   }
@@ -376,7 +376,7 @@ const MenuPublic = () => {
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`px-3 py-1 border rounded-xl transition ${page === i + 1
+                  className={`px-3 py-1 border rounded-xl transition cursor-pointer ${page === i + 1
                     ? "bg-black text-white"
                     : "hover:bg-gray-100 text-gray-700"
                     }`}
