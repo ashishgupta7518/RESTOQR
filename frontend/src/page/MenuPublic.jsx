@@ -251,7 +251,7 @@ const MenuPublic = () => {
                   };
 
                   try {
-                    await axios.post(`${}/order/restaurant`, orderPayload);
+                    await axios.post(`${API_BASE_URL}/order/restaurant`, orderPayload);
                     alert("Order placed successfully!");
                     setCart({});
                   } catch (err) {
