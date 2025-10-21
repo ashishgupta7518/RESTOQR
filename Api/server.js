@@ -5,6 +5,7 @@ import cors from "cors";
 import restaurantRoutes from "./routes/restaurant.js";
 import adminRoutes from "./routes/admin.js";
 import publicRoutes from "./routes/public.js";
+import Orders from "./routes/Ordersroute.js";
 
 import authRoutes from "./routes/auth.js";
 
@@ -19,6 +20,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/public", publicRoutes);
+app.use("/api/order", Orders);
 
 // Connect DB and Start Server
 mongoose
