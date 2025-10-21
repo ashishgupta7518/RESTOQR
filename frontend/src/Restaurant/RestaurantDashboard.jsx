@@ -2,6 +2,7 @@ import { useState } from "react";
 import RestaurantMenu from "./Dashboard";
 import RestaurantProfile from "./RestaurantProfile";
 import { LogOut } from "lucide-react";
+import ResetPassword from "./ResetPassword";
 
 const RestaurantDashboard = () => {
     const [activeSection, setActiveSection] = useState("profile"); // default: profile
@@ -23,6 +24,8 @@ const RestaurantDashboard = () => {
                 return <div className="p-6">⚙️ Settings Section Coming Soon...</div>;
             case "help":
                 return <div className="p-6">📞 Help Section Coming Soon...</div>;
+            case "change-password":
+                return <div className="p-6"><ResetPassword /></div>;
             default:
                 return <RestaurantProfile />;
         }
@@ -69,6 +72,14 @@ const RestaurantDashboard = () => {
                         >
                             💬 <span>Help</span>
                         </li>
+
+                        <li
+                            onClick={() => setActiveSection("change-password")}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "change-password" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            🔒 <span>Reset password</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -93,4 +104,3 @@ const RestaurantDashboard = () => {
 };
 
 export default RestaurantDashboard;
-    

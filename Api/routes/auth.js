@@ -121,4 +121,50 @@ router.get("/restaurant/profile/:id", async (req, res) => {
   }
 });
 
+
+
+
+// ======================= CHANGE / RESET PASSWORD =======================
+router.post("/change-password", async (req, res) => {
+  try {
+    const { email, oldPassword, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return res.status(400).json({ message: "Email and new password are required" });
+    }
+
+    // Find the restaurant
+    const restaurant = await Restaurant.findOne({ email });
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    // If old password provided, verify it
+    if (oldPassword) {
+      const isMatch = await bcrypt.compare(oldPassword, restaurant.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Old password is incorrect" });
+      }
+    } else {
+      // If no old password, this is a reset — in real apps, this should only be done after email verification
+      console.warn(`Password reset without old password for email: ${email}`);
+    }
+
+    // Hash and save new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    restaurant.password = hashedNewPassword;
+    await restaurant.save();
+
+    res.status(200).json({
+      message: oldPassword
+        ? "Password changed successfully"
+        : "Password reset successfully",
+    });
+  } catch (err) {
+    console.error("Error changing password:", err);
+    res.status(500).json({ message: "Error changing password" });
+  }
+});
+
+
 export default router;
