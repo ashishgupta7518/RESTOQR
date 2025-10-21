@@ -51,7 +51,7 @@ const ResetPassword = () => {
         <Toaster />
         {/* Header */}
         <div className="flex items-center justify-between mb-6 border-b pb-4">
-          <h2 className="text-2xl font-bold text-gray-800">order/restaurant/${restaurantId}
+          <h2 className="text-2xl font-bold text-gray-800">
             {showOldPassword ? "Change Password" : "Forgot Password"}
           </h2>
           <button
