@@ -225,7 +225,7 @@ const RestaurantMenu = () => {
         </h3>
         <div className="flex items-center justify-center border h-32 mb-4">
           <QRCodeCanvas
-            value={`http://localhost:5173/menu/${restaurantId}`}
+            value={`https://restoqr-api.onrender.com/menu/${restaurantId}`}
             size={100}
           />
         </div>
