@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ShoppingCart, Filter, Star, Flame, X } from "lucide-react";
 import API_BASE_URL from "./../config";
+import toast, { Toaster } from "react-hot-toast";
+
+ 
 
 const MenuPublic = () => {
   const { id } = useParams();
@@ -119,7 +122,7 @@ const MenuPublic = () => {
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-3 rounded-xl font-semibold hover:bg-gray-800 transition shadow-md"
+            className=" cursor-pointer w-full bg-black text-white py-3 rounded-xl font-semibold hover:bg-gray-800 transition shadow-md"
           >
             Start Ordering
           </button>
@@ -166,6 +169,7 @@ const MenuPublic = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col relative">
+      <Toaster />
       {/* Hero Header */}
       <header className="relative h-60 md:h-72 bg-cover bg-center flex items-center justify-center text-white">
         <img
@@ -252,11 +256,17 @@ const MenuPublic = () => {
 
                   try {
                     await axios.post(`${API_BASE_URL}/order/restaurant`, orderPayload);
-                    alert("Order placed successfully!");
+                  
+                    toast.success("Order placed successfully!", {
+        duration: 3000,
+        position: "top-center",
+      });
                     setCart({});
                   } catch (err) {
                     console.error(err);
-                    alert("Failed to place order.");
+                   
+
+                    toast.error("Failed to place order.");
                   }
                 }}
                 className="w-full mt-3 bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition shadow-md flex items-center justify-center gap-2"
@@ -346,7 +356,7 @@ const MenuPublic = () => {
                       ) : (
                         <button
                           onClick={() => handleAddToCart(item)}
-                          className="bg-black text-white text-sm px-5 py-2 rounded-xl hover:bg-gray-800 transition"
+                          className="bg-black text-white text-sm px-5 py-2 cursor-pointer rounded-xl hover:bg-gray-800 transition"
                         >
                           Add to Cart
                         </button>

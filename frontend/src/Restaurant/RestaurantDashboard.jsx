@@ -139,7 +139,7 @@ const RestaurantDashboard = () => {
                 <div className="border-t border-gray-700 pt-4">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold py-2 rounded-lg"
+                        className=" cursor-pointer w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold py-2 rounded-lg"
                     >
                         <LogOut className="w-5 h-5" />
                         <span>Logout</span>
