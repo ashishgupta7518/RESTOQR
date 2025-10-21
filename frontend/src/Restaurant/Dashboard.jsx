@@ -15,9 +15,9 @@ const RestaurantMenu = () => {
 
   const token = localStorage.getItem("token");
 
-   const [hasProfile, setHasProfile] = useState(false);
+  const [hasProfile, setHasProfile] = useState(false);
   const [loading, setLoading] = useState(true);
-  
+
 
   const addItem = (e) => {
     e.preventDefault();
@@ -99,7 +99,7 @@ const RestaurantMenu = () => {
   }, []);
 
 
-  
+
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 text-sm">
@@ -225,7 +225,7 @@ const RestaurantMenu = () => {
         </h3>
         <div className="flex items-center justify-center border h-32 mb-4">
           <QRCodeCanvas
-            value={`https://restoqr-api.onrender.com/menu/${restaurantId}`}
+            value={`https://restoqr-98na.onrender.com/menu/${restaurantId}`}
             size={100}
           />
         </div>
