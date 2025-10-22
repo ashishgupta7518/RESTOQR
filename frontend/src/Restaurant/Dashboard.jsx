@@ -11,7 +11,7 @@ const RestaurantMenu = () => {
   const [item, setItem] = useState({ name: "", price: "", description: "" });
   const [search, setSearch] = useState("");
   const [restaurantId, setRestaurantId] = useState("");
-  const [editing, setEditing] = useState({ catIndex: null, itemIndex: null }); // Track editing state
+  const [editing, setEditing] = useState({ catIndex: null, itemIndex: null }); 
 
   const token = localStorage.getItem("token");
 

@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { QRCodeCanvas } from "qrcode.react";
-import { LogOut, Eye, Edit, Trash2 } from "lucide-react";
+import { Eye, Edit, Trash2 } from "lucide-react";
 import API_BASE_URL from "./../config";
-
-
-
 
 const AdminDashboard = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -28,31 +25,13 @@ const AdminDashboard = () => {
   }, []);
 
   const filteredRestaurants = restaurants.filter((r) =>
-  (r.name?.toLowerCase().includes(search.toLowerCase()) ||
-    r.email?.toLowerCase().includes(search.toLowerCase()))
+    r.name?.toLowerCase().includes(search.toLowerCase()) ||
+    r.email?.toLowerCase().includes(search.toLowerCase())
   );
 
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    window.location.href = "/login";
-  };
-
   return (
-    <div className="min-h-screen bg-white p-6 text-sm">
-      <div className="flex justify-between items-center border-b pb-4 mb-6">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          🍴 Restaurant Admin Dashboard
-        </h2>
-
-
-        <button onClick={handleLogout} className="flex items-center gap-2 border px-4  bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold py-2 rounded-lg">
-          <LogOut className="w-4 h-4" /> Logout
-        </button>
-
-      </div>
-
+    <div className="text-sm">
+      {/* Stats cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-gray-50 rounded p-4 shadow">
           <p className="text-gray-500 text-xs">Total Restaurants</p>
@@ -72,6 +51,7 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      {/* Table */}
       <div className="bg-white rounded shadow">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="font-semibold">Registered Restaurants</h3>
@@ -91,6 +71,7 @@ const AdminDashboard = () => {
                 <th className="px-4 py-2">Location</th>
                 <th className="px-4 py-2">Contact</th>
                 <th className="px-4 py-2">Status</th>
+                <th className="px-4 py-2">QR Code</th>
                 <th className="px-4 py-2 text-right">Actions</th>
               </tr>
             </thead>
@@ -110,11 +91,12 @@ const AdminDashboard = () => {
                     <div className="text-xs text-gray-500">+1 (555) 000-0000</div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">Active</span>
+                    <span className="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">
+                      Active
+                    </span>
                   </td>
                   <td className="px-4 py-3">
                     <QRCodeCanvas value={`https://restoqr-98na.onrender.com/menu/${r._id}`} size={64} />
-
                   </td>
                   <td className="px-4 py-3 text-right space-x-2">
                     <button className="text-gray-600 hover:text-blue-600"><Eye size={16} /></button>

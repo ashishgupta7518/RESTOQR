@@ -7,6 +7,7 @@ import RestaurantOrders from "./RestaurantOrders";
 import NotificationsPanel from "./NotificationsPanel";
 import axios from "axios";
 import API_BASE_URL from "./../config";
+import OrderCleanup from "./OrderCleanup";
 
 const RestaurantDashboard = () => {
     const [activeSection, setActiveSection] = useState("profile"); // default: profile
@@ -64,6 +65,8 @@ const RestaurantDashboard = () => {
                 return <div className="p-6"><RestaurantOrders restaurantId={restaurantId} /></div>;
             case "Notification":
                 return <div className="p-6"><NotificationsPanel restaurantId={restaurantId} /></div>;
+            case "delete-order":
+                return <div className="p-6"><OrderCleanup restaurantId={restaurantId} /></div>;
             default:
                 return <RestaurantProfile />;
         }
@@ -132,6 +135,15 @@ const RestaurantDashboard = () => {
                                 </span>
                             )}
                         </li>
+
+                        <li
+                            onClick={() => setActiveSection("delete-order")}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "delete-order" ? "bg-gray-700" : ""}`}
+                        >
+                            🗑️ <span>Delete Order</span>
+                        </li>
+
+
                     </ul>
                 </div>
 

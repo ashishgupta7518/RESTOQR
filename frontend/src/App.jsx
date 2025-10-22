@@ -6,6 +6,7 @@ import AdminDashboard from "./admin/AdminDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import MenuPublic from "./page/MenuPublic";
 import RestaurantQRUI from "./page/Home";
+import AdminPanel from "./admin/AdminPanel";
 
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
 
       <Route path="/admin/dashboard" element={
         <ProtectedRoute allowedRole="admin">
-          <AdminDashboard />
+          <AdminPanel />
         </ProtectedRoute>
       } />
 

@@ -7,7 +7,7 @@ const RestaurantOrders = ({ restaurantId }) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // ✅ Fetch all orders for restaurant
+ 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -24,7 +24,7 @@ const RestaurantOrders = ({ restaurantId }) => {
         fetchOrders();
     }, [restaurantId]);
 
-    // ✅ Update order status to served
+   
     const markAsServed = async (orderId) => {
         try {
             await axios.patch(`${API_BASE_URL}/order/${orderId}/status`, {

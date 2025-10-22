@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const router = express.Router();
 
-// ✅ Create new order
+// Create new order
 router.post("/restaurant", async (req, res) => {
   try {
     const { restaurantId, customer, items, totalPrice, status } = req.body;
@@ -16,7 +16,7 @@ router.post("/restaurant", async (req, res) => {
       return res.status(404).json({ error: "Restaurant not found" });
     }
 
-    // ✅ Generate unique orderId
+    // Generate unique orderId
     const orderId = uuidv4();
 
     // Create order with restaurantName and orderId
@@ -38,7 +38,7 @@ router.post("/restaurant", async (req, res) => {
   }
 });
 
-// ✅ Get all orders for a specific restaurant
+// Get all orders for a specific restaurant
 router.get("/restaurant/:id", async (req, res) => {
   try {
     const orders = await Order.find({ restaurantId: req.params.id }).sort({
@@ -51,7 +51,7 @@ router.get("/restaurant/:id", async (req, res) => {
   }
 });
 
-// ✅ Update order status (pending → served)
+// Update order status (pending → served)
 router.patch("/:id/status", async (req, res) => {
   try {
     const { status } = req.body;
@@ -100,5 +100,41 @@ router.get("/notifications/:restaurantId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch notifications" });
   }
 });
+
+
+// Delete all orders for a specific restaurant
+router.delete("/cleanup/restaurant/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await Order.deleteMany({ restaurantId: id });
+    res.json({
+      message: `Deleted ${result.deletedCount} orders for restaurant ${id}`,
+    });
+  } catch (err) {
+    console.error("Error deleting orders:", err);
+    res.status(500).json({ error: "Failed to delete orders" });
+  }
+});
+
+
+// Optional: Delete old orders (e.g., older than 30 days)
+router.delete("/cleanup/old", async (req, res) => {
+  try {
+    const days = parseInt(req.query.days) || 30; // default 30 days
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+
+    const result = await Order.deleteMany({ createdAt: { $lt: cutoffDate } });
+
+    res.json({
+      message: `Deleted ${result.deletedCount} old orders (older than ${days} days)`,
+    });
+  } catch (err) {
+    console.error("Error cleaning old orders:", err);
+    res.status(500).json({ error: "Failed to clean old orders" });
+  }
+});
+
 
 export default router;

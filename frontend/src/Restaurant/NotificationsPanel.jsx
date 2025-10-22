@@ -10,7 +10,7 @@ const NotificationsPanel = ({ restaurantId }) => {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
 
-    // ✅ Fetch all orders periodically
+    
     const fetchOrders = async () => {
         try {
             const { data } = await axios.get(
@@ -30,7 +30,7 @@ const NotificationsPanel = ({ restaurantId }) => {
         return () => clearInterval(interval);
     }, [restaurantId]);
 
-    // ✅ Automatically apply filter and search when data or filters change
+    
     useEffect(() => {
         let result = [...orders];
 
@@ -59,11 +59,11 @@ const NotificationsPanel = ({ restaurantId }) => {
         setFiltered(result);
     }, [orders, statusFilter, search]);
 
-    // ✅ Event handlers
+    
     const handleFilter = (status) => setStatusFilter(status);
     const handleSearch = (e) => setSearch(e.target.value);
 
-    // ✅ Stats calculation (Approved includes Served)
+    
     const stats = {
         total: orders.length,
         pending: orders.filter((o) => o.status === "pending").length,
