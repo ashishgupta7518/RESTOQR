@@ -4,6 +4,7 @@ import { LogOut } from "lucide-react";
 import API_BASE_URL from "../config";
 import AdminDashboard from "./AdminDashboard";
 import AdminAnalytics from "./AdminAnalytics";
+import CreateAdmin from "./CreateAdmin";
 
 const AdminPanel = () => {
     const [activeSection, setActiveSection] = useState("dashboard");
@@ -22,6 +23,8 @@ const AdminPanel = () => {
                 return <AdminDashboard />;
             case "settings":
                 return <div className="p-6 text-gray-700">⚙️ Settings Section Coming Soon...</div>;
+            case "create-admin":
+                return <CreateAdmin />;
             default:
                 return <div className="p-6 text-gray-700">📊 Admin Dashboard Coming Soon...</div>;
         }
@@ -59,6 +62,13 @@ const AdminPanel = () => {
                                 }`}
                         >
                             ⚙️ <span>Settings</span>
+                        </li>
+                        <li
+                            onClick={() => setActiveSection("create-admin")}
+                            className={`cursor-pointer p-3 rounded-lg transition-colors flex items-center gap-2 hover:bg-gray-700 ${activeSection === "create-admin" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            👤 <span>Create Admin</span>
                         </li>
                     </ul>
                 </div>

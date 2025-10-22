@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Restaurant from "../models/Restaurant.js";
+import Admin from "../models/Admin.js";
 
 
 const router = express.Router();
@@ -9,31 +10,44 @@ const router = express.Router();
 // ======================= LOGIN =======================
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  console.log("Login attempt for email:", email);
+  if (!email || !password)
+    return res.status(400).json({ message: "Email and password required" });
 
-  // Admin login
-  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-    const token = jwt.sign({ role: "admin", email }, process.env.JWT_SECRET, { expiresIn: "1d" });
-
-    // For admin, there’s no _id in DB, so we can just send a placeholder id
-    return res.json({ token, role: "admin", id: "admin" });
-  }
-
-  // Restaurant login
   try {
-    const user = await Restaurant.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    // Admin/Superadmin login
+    const adminUser = await Admin.findOne({ email: email.toLowerCase().trim() });
+    console.log("Admin user found:", adminUser);
+    if (adminUser) {
+      const isMatch = await bcrypt.compare(password.trim(), adminUser.password);
+      if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
+      const token = jwt.sign(
+        { id: adminUser._id, role: adminUser.role, email: adminUser.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      return res.json({ token, role: adminUser.role, id: adminUser._id });
+    }
+
+    // Restaurant login
+    const restaurant = await Restaurant.findOne({ email: email.toLowerCase().trim() });
+    console.log("Restaurant found:", restaurant);
+    if (!restaurant) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(password.trim(), restaurant.password);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, role: "restaurant" }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign({ id: restaurant._id, role: "restaurant" }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    return res.json({ token, role: "restaurant", id: restaurant._id });
 
-    res.json({ token, role: "restaurant", id: user._id });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Login error" });
+    res.status(500).json({ message: "Login error" });
   }
 });
+
 
 
 // ======================= REGISTER =======================

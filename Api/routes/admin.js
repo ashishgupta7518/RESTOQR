@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import Restaurant from "../models/Restaurant.js";
 import Order from "../models/Order.js";
 import ExcelJS from "exceljs";
+import Admin from "../models/Admin.js";
+import bcrypt from "bcryptjs";
 
 const router = express.Router();
 
@@ -14,6 +16,37 @@ const verifyAdmin = (req, res, next) => {
     next();
   });
 };
+// const verifySuperAdmin = (req, res, next) => {
+//   const token = req.headers.authorization?.split(" ")[1];
+//   if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+//   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+//     if (err) return res.status(403).json({ message: "Forbidden" });
+//     if (decoded.role !== "admin") return res.status(403).json({ message: "Only admin allowed" });
+//     req.user = decoded;
+//     next();
+//   });
+// };
+
+
+router.post("/create-admin", verifyAdmin, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ message: "Email and password required" });
+
+    const exists = await Admin.findOne({ email: email.toLowerCase() });
+    if (exists) return res.status(400).json({ message: "Admin already exists" });
+
+    const hashed = await bcrypt.hash(password, 10);
+    const admin = new Admin({ email: email.toLowerCase(), password: hashed, role: "admin" });
+    await admin.save();
+
+    res.status(201).json({ message: "Admin created successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create admin" });
+  }
+});
 
 router.get("/restaurants", verifyAdmin, async (req, res) => {
   const restaurants = await Restaurant.find({}, "name email menu");

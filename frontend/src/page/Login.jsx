@@ -20,7 +20,7 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, {
+      const res = await axios.post(`http://localhost:5000/api/auth/login`, {
         email,
         password,
       });
@@ -107,9 +107,8 @@ const Login = () => {
               type="button"
               onClick={handleLogin}
               disabled={loading}
-              className={`w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-2 rounded transition duration-200 cursor-pointer ${
-                loading ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-700"
-              }`}
+              className={`w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-2 rounded transition duration-200 cursor-pointer ${loading ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-700"
+                }`}
             >
               {loading ? (
                 <>
