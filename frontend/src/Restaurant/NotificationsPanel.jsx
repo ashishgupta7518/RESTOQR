@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Search, Filter, Download } from "lucide-react";
 import API_BASE_URL from "../config";
+import { toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 const NotificationsPanel = ({ restaurantId }) => {
     const [orders, setOrders] = useState([]);
@@ -10,7 +12,38 @@ const NotificationsPanel = ({ restaurantId }) => {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
 
-    
+
+    const downloadOrderItem = async () => {
+
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) return toast.error("Unauthorized — please login again");
+
+            const response = await axios.get(
+                `http://localhost:5000/api/admin/download-orders/${restaurantId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    responseType: "blob", // Important for file downloads
+                }
+            );
+
+            // Create a download link dynamically
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `orders_${restaurantId}.csv`); // adjust file type if PDF
+            document.body.appendChild(link);
+            link.click();
+
+            toast.success("Orders downloaded successfully!");
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response?.data?.message || "Failed to download orders");
+        }
+
+    }
     const fetchOrders = async () => {
         try {
             const { data } = await axios.get(
@@ -30,7 +63,7 @@ const NotificationsPanel = ({ restaurantId }) => {
         return () => clearInterval(interval);
     }, [restaurantId]);
 
-    
+
     useEffect(() => {
         let result = [...orders];
 
@@ -59,11 +92,11 @@ const NotificationsPanel = ({ restaurantId }) => {
         setFiltered(result);
     }, [orders, statusFilter, search]);
 
-    
+
     const handleFilter = (status) => setStatusFilter(status);
     const handleSearch = (e) => setSearch(e.target.value);
 
-    
+
     const stats = {
         total: orders.length,
         pending: orders.filter((o) => o.status === "pending").length,
@@ -82,6 +115,7 @@ const NotificationsPanel = ({ restaurantId }) => {
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
+            <Toaster position="top-center" reverseOrder={false} />
             {/* Header */}
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-800">📦 Live Orders Dashboard</h2>
@@ -102,9 +136,9 @@ const NotificationsPanel = ({ restaurantId }) => {
                         <button
                             key={s}
                             onClick={() => handleFilter(s)}
-                            className={`px-4 py-2 text-sm rounded-lg border transition-all ${statusFilter === s
-                                    ? "bg-blue-600 text-white border-blue-600"
-                                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                            className={`px-4 py-2 text-sm rounded-lg border transition-all cursor-pointer ${statusFilter === s
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "border-gray-300 text-gray-700 hover:bg-gray-100"
                                 }`}
                         >
                             {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -129,7 +163,7 @@ const NotificationsPanel = ({ restaurantId }) => {
                         Filter
                     </button>
 
-                    <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition">
+                    <button onClick={downloadOrderItem} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition cursor-pointer">
                         <Download className="w-4 h-4" />
                         Export
                     </button>
@@ -186,11 +220,11 @@ const NotificationsPanel = ({ restaurantId }) => {
                                     <td className="px-6 py-4">
                                         <span
                                             className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === "pending"
-                                                    ? "bg-yellow-100 text-yellow-700"
-                                                    : order.status === "approved" ||
-                                                        order.status === "served"
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : order.status === "approved" ||
+                                                    order.status === "served"
+                                                    ? "bg-green-100 text-green-700"
+                                                    : "bg-red-100 text-red-700"
                                                 }`}
                                         >
                                             {order.status?.toUpperCase()}
