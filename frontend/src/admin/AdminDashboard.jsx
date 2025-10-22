@@ -30,7 +30,7 @@ const AdminDashboard = () => {
   );
 
   return (
-    <div className="text-sm">
+    <div className="text-sm p-8">
       {/* Stats cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-gray-50 rounded p-4 shadow">

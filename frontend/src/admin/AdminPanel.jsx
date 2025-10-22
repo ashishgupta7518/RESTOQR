@@ -86,7 +86,7 @@ const AdminPanel = () => {
             </div>
 
             {/* Main Content */}
-            <div className="ml-64 flex-1 bg-gray-50 p-8 overflow-y-auto">
+            <div className="ml-64 flex-1   overflow-y-auto  ">
                 {renderContent()}
             </div>
         </div>
