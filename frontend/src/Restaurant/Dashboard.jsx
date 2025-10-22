@@ -11,7 +11,7 @@ const RestaurantMenu = () => {
   const [item, setItem] = useState({ name: "", price: "", description: "" });
   const [search, setSearch] = useState("");
   const [restaurantId, setRestaurantId] = useState("");
-  const [editing, setEditing] = useState({ catIndex: null, itemIndex: null }); 
+  const [editing, setEditing] = useState({ catIndex: null, itemIndex: null });
 
   const token = localStorage.getItem("token");
 
@@ -154,7 +154,7 @@ const RestaurantMenu = () => {
 
             <button
               type="submit"
-              className="bg-gray-900 text-white px-4 py-2 rounded w-full hover:bg-gray-800"
+              className="bg-gray-900 text-white px-4 py-2 rounded w-full hover:bg-gray-800 cursor-pointer"
             >
               {editing.catIndex !== null ? "Update Item" : "Add Menu Item"}
             </button>
@@ -232,7 +232,7 @@ const RestaurantMenu = () => {
         <div className="text-center">
           <button
             onClick={saveMenu}
-            className="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+            className="mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800 cursor-pointer"
           >
             Save Menu to Database
           </button>

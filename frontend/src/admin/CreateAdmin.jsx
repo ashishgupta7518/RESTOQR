@@ -4,6 +4,8 @@ import axios from "axios";
 import API_BASE_URL from "../config";
 import { toast } from "react-hot-toast";
 import { Loader2, UserPlus } from "lucide-react";
+import { Toaster } from "react-hot-toast";
+
 
 const API_URL = `${API_BASE_URL}/admin/create-admin`;
 
@@ -38,6 +40,7 @@ const CreateAdmin = () => {
 
     return (
         <div className="min-h-screen flex  items-center justify-center bg-gradient-to-br from-orange-50 to-yellow-50 p-8">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="w-full max-w-2xl bg-white p-10 rounded-3xl shadow-2xl border border-gray-200 relative overflow-hidden">
                 {/* Decorative image */}
                 <img

@@ -56,7 +56,7 @@ const ResetPassword = () => {
           </h2>
           <button
             onClick={toggleMode}
-            className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition"
+            className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition cursor-pointer"
           >
             {showOldPassword
               ? "Forgot password?"
@@ -137,7 +137,7 @@ const ResetPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors shadow-md disabled:opacity-70"
+              className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors shadow-md disabled:opacity-70 cursor-pointer"
             >
               {loading ? "Updating..." : "Update Password"}
             </button>

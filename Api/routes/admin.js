@@ -54,6 +54,21 @@ router.get("/restaurants", verifyAdmin, async (req, res) => {
 });
 
 
+router.get("/restaurant-list", async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find({}, "name _id").sort({ name: 1 });
+    res.status(200).json({
+      success: true,
+      count: restaurants.length,
+      restaurants,
+    });
+  } catch (err) {
+    console.error("Error fetching restaurant list:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+
 
 // routes/admin.js
 router.get("/restaurant-stats", async (req, res) => {
