@@ -9,7 +9,7 @@ const AdminAnalytics = () => {
     const fetchStats = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.get(`http://localhost:5000/api/admin/restaurant-stats`, {
+            const res = await axios.get(`${API_BASE_URL}/admin/restaurant-stats`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setStats(res.data);
