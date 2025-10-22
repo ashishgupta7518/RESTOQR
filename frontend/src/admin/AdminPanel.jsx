@@ -26,7 +26,7 @@ const AdminPanel = () => {
             case "create-admin":
                 return <CreateAdmin />;
             default:
-                return <div className="p-6 text-gray-700">📊 Admin Dashboard Coming Soon...</div>;
+                return <AdminAnalytics />;
         }
     };
 
