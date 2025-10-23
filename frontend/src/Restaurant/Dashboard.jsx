@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { QRCodeCanvas } from "qrcode.react";
-import { PlusCircle, Trash2, Edit2, Image, Check, X } from "lucide-react";
+import { PlusCircle, Trash2, Edit2, Image } from "lucide-react";
 import API_BASE_URL from "./../config";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -14,10 +14,27 @@ const RestaurantMenu = () => {
   const [editing, setEditing] = useState({ catIndex: null, itemIndex: null });
 
   const token = localStorage.getItem("token");
-
-  const [hasProfile, setHasProfile] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Predefined category options for restaurants
+  const categories = [
+    "Starters",
+    "Main Course",
+    "Biryani",
+    "Chinese",
+    "Pasta",
+    "Pizza",
+    "Burgers",
+    "Sandwiches",
+    "Snacks",
+    "Desserts",
+    "Beverages",
+    "Soups",
+    "Salads",
+    "Breakfast",
+    "Tandoor",
+    "Seafood",
+  ];
 
   const addItem = (e) => {
     e.preventDefault();
@@ -98,9 +115,6 @@ const RestaurantMenu = () => {
     fetchMenu();
   }, []);
 
-
-
-
   return (
     <div className="min-h-screen bg-gray-50 p-6 text-sm">
       <Toaster />
@@ -123,13 +137,21 @@ const RestaurantMenu = () => {
               onChange={(e) => setItem({ ...item, name: e.target.value })}
               className="w-full border px-3 py-2 rounded"
             />
-            <input
-              type="text"
-              placeholder="Category"
+
+            {/* ✅ Category dropdown */}
+            <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full border px-3 py-2 rounded"
-            />
+              className="w-full border px-3 py-2 rounded bg-white"
+            >
+              <option value="">-- Select Category --</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+
             <input
               type="text"
               placeholder="e.g. 12.99"
@@ -180,7 +202,9 @@ const RestaurantMenu = () => {
             ) : (
               menu.map((cat, i) => (
                 <li key={i}>
-                  <h4 className="font-bold mb-2">{cat.category}</h4>
+                  <h4 className="font-bold mb-2 text-gray-700">
+                    {cat.category}
+                  </h4>
                   <ul className="space-y-2">
                     {cat.items
                       .filter((itm) =>
@@ -218,7 +242,7 @@ const RestaurantMenu = () => {
         </div>
       </div>
 
-      {/* QR Code Generator */}
+      {/* QR Code Section */}
       <div className="mt-10 bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-semibold mb-4">
           Generate QR Code for Your Menu
