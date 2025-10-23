@@ -79,7 +79,7 @@ const CreateAdmin = () => {
                         </div>
                         <button
                             type="submit"
-                            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center transition-all text-lg"
+                            className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center transition-all text-lg cursor-pointer"
                             disabled={loading}
                         >
                             {loading && <Loader2 className="animate-spin mr-3 h-5 w-5" />}

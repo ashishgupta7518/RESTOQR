@@ -48,6 +48,48 @@ router.post("/create-admin", verifyAdmin, async (req, res) => {
   }
 });
 
+
+
+
+
+
+router.delete("/delete-admin/:id", verifyAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Prevent super-admin from deleting themselves (optional safeguard)
+    // if (req.admin.id === id) {
+    //   return res.status(400).json({ message: "You cannot delete your own account." });
+    // }
+
+    // Check if admin exists
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    // Delete the admin
+    await Admin.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Admin deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting admin:", err);
+    res.status(500).json({ message: "Failed to delete admin" });
+  }
+});
+
+
+router.get("/all", verifyAdmin, async (req, res) => {
+  try {
+    const admins = await Admin.find({}, "_id email role createdAt");
+    res.json(admins);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch admins" });
+  }
+});
+
+
 router.get("/restaurants", verifyAdmin, async (req, res) => {
   const restaurants = await Restaurant.find({}, "name email menu");
   res.json(restaurants);

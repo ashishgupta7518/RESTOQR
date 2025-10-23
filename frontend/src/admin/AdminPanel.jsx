@@ -13,6 +13,7 @@ import AdminDashboard from "./AdminDashboard";
 import AdminAnalytics from "./AdminAnalytics";
 import CreateAdmin from "./CreateAdmin";
 import DeleteRestaurant from "./DeleteRestaurant";
+import DeleteAdmin from "./DeleteAdmin";
 
 const AdminPanel = () => {
     const [activeSection, setActiveSection] = useState("dashboard");
@@ -39,6 +40,8 @@ const AdminPanel = () => {
                 return <CreateAdmin />;
             case "delete-resto":
                 return <DeleteRestaurant />;
+            case "delete-admin":
+                return <DeleteAdmin />;
             default:
                 return <AdminAnalytics />;
         }
@@ -98,6 +101,17 @@ const AdminPanel = () => {
                             <Settings className="w-5 h-5" />
                             <span>Settings</span>
                         </li>
+
+
+
+                        <li
+                            onClick={() => setActiveSection("delete-admin")}
+                            className={`cursor-pointer p-3 rounded-lg transition-all flex items-center gap-3 hover:bg-gray-700 hover:translate-x-1 ${activeSection === "delete-admin" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            <Trash2 className="w-5 h-5" />
+                            <span>Delete Admin</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -105,7 +119,7 @@ const AdminPanel = () => {
                 <div className="border-t border-gray-700 pt-4">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 transition-all text-white font-semibold py-2 rounded-lg"
+                        className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 transition-all text-white font-semibold py-2 rounded-lg cursor-pointer"
                     >
                         <LogOut className="w-5 h-5" />
                         <span>Logout</span>
