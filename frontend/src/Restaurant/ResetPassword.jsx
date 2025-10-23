@@ -1,7 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { motion } from "framer-motion";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Lock, KeyRound } from "lucide-react";
 import API_BASE_URL from "../config";
 
 const ResetPassword = () => {
@@ -46,62 +48,56 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="w-full bg-gray-50 min-h-screen p-6">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-md p-8">
-        <Toaster />
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6 border-b pb-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {showOldPassword ? "Change Password" : "Forgot Password"}
-          </h2>
-          <button
-            onClick={toggleMode}
-            className="text-sm text-indigo-600 hover:text-indigo-800 font-medium transition cursor-pointer"
-          >
-            {showOldPassword
-              ? "Forgot password?"
-              : "Remembered your password? Change normally"}
-          </button>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-red-50 to-rose-100 p-8">
+      <Toaster position="top-center" />
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative w-full max-w-2xl bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-gray-200"
+      >
+        {/* Floating Logo */}
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white p-4 rounded-full shadow-md border border-gray-100">
+          <Lock className="w-10 h-10 text-rose-500" />
         </div>
 
-        {/* Form */}
+        <h2 className="text-3xl font-bold text-center text-gray-800 mt-8 mb-6">
+          {showOldPassword ? "🔐 Change Password" : "🔑 Forgot Password"}
+        </h2>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email */}
           <div>
-            <label className="block text-gray-700 font-medium mb-1">
-              Email
-            </label>
+            <label className="block text-gray-700 font-medium mb-2">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
               placeholder="Enter your registered email"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 text-lg focus:ring-4 focus:ring-rose-200 focus:outline-none"
             />
           </div>
 
-          {/* Old Password (if in normal mode) */}
+          {/* Old Password */}
           {showOldPassword && (
             <div className="relative">
-              <label className="block text-gray-700 font-medium mb-1">
-                Old Password
-              </label>
+              <label className="block text-gray-700 font-medium mb-2">Old Password</label>
               <input
                 type={showPassword.old ? "text" : "password"}
                 name="oldPassword"
                 value={formData.oldPassword}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                 placeholder="Enter your current password"
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 pr-10 text-lg focus:ring-4 focus:ring-rose-200 focus:outline-none"
               />
               <span
                 onClick={() =>
                   setShowPassword((prev) => ({ ...prev, old: !prev.old }))
                 }
-                className="absolute right-3 top-9 text-gray-500 cursor-pointer"
+                className="absolute right-4 top-10 text-gray-500 cursor-pointer"
               >
                 {showPassword.old ? <FaEyeSlash /> : <FaEye />}
               </span>
@@ -110,40 +106,58 @@ const ResetPassword = () => {
 
           {/* New Password */}
           <div className="relative">
-            <label className="block text-gray-700 font-medium mb-1">
-              New Password
-            </label>
+            <label className="block text-gray-700 font-medium mb-2">New Password</label>
             <input
               type={showPassword.new ? "text" : "password"}
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
               placeholder="Enter a new secure password"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 pr-10 text-lg focus:ring-4 focus:ring-rose-200 focus:outline-none"
             />
             <span
               onClick={() =>
                 setShowPassword((prev) => ({ ...prev, new: !prev.new }))
               }
-              className="absolute right-3 top-9 text-gray-500 cursor-pointer"
+              className="absolute right-4 top-10 text-gray-500 cursor-pointer"
             >
               {showPassword.new ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
 
-          {/* Submit */}
-          <div className="flex justify-end">
+          {/* Toggle Mode */}
+          <div className="text-right">
             <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors shadow-md disabled:opacity-70 cursor-pointer"
+              type="button"
+              onClick={toggleMode}
+              className="text-sm text-rose-600 hover:text-rose-800 font-medium transition cursor-pointer"
             >
-              {loading ? "Updating..." : "Update Password"}
+              {showOldPassword
+                ? "Forgot password?"
+                : "Remembered your password? Change normally"}
             </button>
           </div>
+
+          {/* Submit Button */}
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-rose-500 to-red-500 text-white font-bold py-3 rounded-xl shadow-md hover:opacity-90 transition-all text-lg cursor-pointer"
+          >
+            {loading ? (
+              <>
+                <KeyRound className="animate-spin w-5 h-5" /> Updating...
+              </>
+            ) : (
+              <>
+                <KeyRound className="w-5 h-5" /> Update Password
+              </>
+            )}
+          </motion.button>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };

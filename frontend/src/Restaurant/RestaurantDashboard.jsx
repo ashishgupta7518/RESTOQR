@@ -69,25 +69,25 @@ const RestaurantDashboard = () => {
                 return <div className="p-6">📞 Help Section Coming Soon...</div>;
             case "change-password":
                 return (
-                    <div className="p-6">
+                    <div >
                         <ResetPassword />
                     </div>
                 );
             case "orders":
                 return (
-                    <div className="p-6">
+                    <div >
                         <RestaurantOrders restaurantId={restaurantId} />
                     </div>
                 );
             case "Notification":
                 return (
-                    <div className="p-6">
+                    <div>
                         <NotificationsPanel restaurantId={restaurantId} />
                     </div>
                 );
             case "delete-order":
                 return (
-                    <div className="p-6">
+                    <div >
                         <OrderCleanup restaurantId={restaurantId} />
                     </div>
                 );
@@ -171,7 +171,7 @@ const RestaurantDashboard = () => {
             </div>
 
             {/* Main Content */}
-            <div className="ml-64 flex-1 bg-gray-50 p-8 overflow-y-auto">{renderContent()}</div>
+            <div className="ml-64 flex-1 bg-gray-50  overflow-y-auto">{renderContent()}</div>
         </div>
     );
 };
