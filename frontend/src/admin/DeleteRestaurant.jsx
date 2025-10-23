@@ -15,7 +15,7 @@ const AdminDeleteRestaurant = () => {
   const fetchRestaurants = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/admin/restaurant-list`, {
+      const res = await axios.get(`${API_BASE_URL}/admin/restaurant-list`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRestaurants(res.data.restaurants || []);

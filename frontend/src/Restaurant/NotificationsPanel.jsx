@@ -20,7 +20,7 @@ const NotificationsPanel = ({ restaurantId }) => {
             if (!token) return toast.error("Unauthorized — please login again");
 
             const response = await axios.get(
-                `http://localhost:5000/api/admin/download-orders/${restaurantId}`,
+                `${API_BASE_URL}/admin/download-orders/${restaurantId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
