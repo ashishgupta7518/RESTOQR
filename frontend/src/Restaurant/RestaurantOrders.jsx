@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { CheckCircle, Clock, Loader2 } from "lucide-react";
+import { CheckCircle, Clock, Loader2, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import API_BASE_URL from "../config";
@@ -9,6 +9,7 @@ const RestaurantOrders = ({ restaurantId }) => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Fetch all orders for the restaurant
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -26,6 +27,30 @@ const RestaurantOrders = ({ restaurantId }) => {
         fetchOrders();
     }, [restaurantId]);
 
+    //  Download PDF receipt for specific order
+    const handleDownloadReceipt = async (orderId) => {
+        try {
+            const response = await axios.get(
+                `${API_BASE_URL}/order/${restaurantId}/receipt/${orderId}`,
+                { responseType: "blob" }
+            );
+
+            // Create file download link
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `Receipt_${orderId}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            toast.success("Receipt downloaded!");
+        } catch (error) {
+            console.error("Error downloading receipt:", error);
+            toast.error("Failed to download receipt.");
+        }
+    };
+
+    //  Mark an order as served
     const markAsServed = async (orderId) => {
         try {
             await axios.patch(`${API_BASE_URL}/order/${orderId}/status`, {
@@ -96,8 +121,8 @@ const RestaurantOrders = ({ restaurantId }) => {
 
                                         <span
                                             className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 ${order.status === "pending"
-                                                    ? "bg-yellow-100 text-yellow-700"
-                                                    : "bg-green-100 text-green-700"
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-green-100 text-green-700"
                                                 }`}
                                         >
                                             {order.status === "pending" ? (
@@ -120,9 +145,7 @@ const RestaurantOrders = ({ restaurantId }) => {
                                     </div>
 
                                     <div>
-                                        <h3 className="font-semibold text-gray-700 mb-2">
-                                            Items:
-                                        </h3>
+                                        <h3 className="font-semibold text-gray-700 mb-2">Items:</h3>
                                         <ul className="text-gray-700 space-y-1">
                                             {order.items.map((item) => (
                                                 <li
@@ -143,16 +166,29 @@ const RestaurantOrders = ({ restaurantId }) => {
                                             Total: ₹{order.totalPrice}
                                         </span>
 
-                                        {order.status === "pending" && (
+                                        <div className="flex items-center gap-2">
+                                            {order.status === "pending" && (
+                                                <motion.button
+                                                    whileTap={{ scale: 0.95 }}
+                                                    whileHover={{ scale: 1.05 }}
+                                                    onClick={() => markAsServed(order._id)}
+                                                    className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-2 rounded-xl font-semibold text-sm shadow-md transition cursor-pointer"
+                                                >
+                                                    Mark as Served
+                                                </motion.button>
+                                            )}
+
+                                            {/* ✅ Download Receipt Button */}
                                             <motion.button
                                                 whileTap={{ scale: 0.95 }}
                                                 whileHover={{ scale: 1.05 }}
-                                                onClick={() => markAsServed(order._id)}
-                                                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-2 rounded-xl font-semibold text-sm shadow-md transition cursor-pointer"
+                                                onClick={() => handleDownloadReceipt(order._id)}
+                                                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-3 py-2 rounded-xl font-semibold text-sm shadow-md flex items-center gap-2 transition cursor-pointer"
                                             >
-                                                Mark as Served
+                                                <Download className="w-4 h-4" />
+                                                Receipt
                                             </motion.button>
-                                        )}
+                                        </div>
                                     </div>
                                 </div>
                             </motion.div>
